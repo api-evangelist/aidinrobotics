@@ -1,0 +1,135 @@
+generated: '2026-09-14'
+method: searched
+source: https://github.com/aidinrobotics/aidin-hand2-sdk
+source_secondary: https://www.aidinrobotics.co.kr/en/certification
+description: >-
+  AIDIN ROBOTICS conforms to nothing in the usual API-standards sense — there is no OAuth, no OIDC,
+  no SCIM, no OData, no RFC 9457, no JSON:API, because there is no REST surface for any of them to
+  live on. The standards it DOES implement are the ones its market actually runs on, and they are
+  declared in the contract rather than claimed on a marketing page: the AIDIN Hand Gen2 SDK speaks
+  CiA 402 to the actuator drives, frames it over CAN-FD on Linux SocketCAN, and says so in its own
+  source and setup documentation. Alongside that sit the publishing conventions the SDK adopts by
+  name (Semantic Versioning, Keep a Changelog, SPDX/Apache-2.0) and, on the web side, one probed
+  protocol version. Product-level marks (ISO 9001, CE, KC, FCC, RoHS) are published on the
+  company's certification page and are recorded separately below, because they certify hardware,
+  not an interface.
+conformance:
+- id: cia-402
+  label: CiA 402 / CANopen drive profile (IEC 61800-7-201)
+  conforms: true
+  domain_standard: true
+  evidence: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/cpp/src/hand_core/comms/state_machine/cia402.hpp
+  note: >-
+    The SDK implements the CiA 402 status-word and control-word rules as a dedicated, unit-tested
+    module and drives each actuator through the profile's state machine (Ready to Switch On,
+    Switched On, Operation Enabled, Fault, Quick Stop Active, plus mode-6 homing bits 12/13). The
+    header's own comment sets the boundary precisely: "CiA402 is implementation vocabulary and is
+    never exposed on the public API" — so the hand conforms on the wire while the C++ API stays
+    profile-agnostic. This is the domain-standard signature for this market: an integrator who
+    already speaks CiA 402 recognises the drive behaviour without a bespoke connector.
+- id: can-fd-socketcan
+  label: CAN FD (ISO 11898-1) over Linux SocketCAN
+  conforms: true
+  domain_standard: true
+  evidence: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/docs/en/05_can_fd_setup.md
+  note: >-
+    Documented bit timing is 1 Mbit/s nominal and 5 Mbit/s data phase, brought up as a standard
+    SocketCAN link with CAN_RAW_FD_FRAMES; the setup guide names two commodity adapters (PEAK
+    PCAN-USB FD, CANable 2.0 Pro / candleLight) and the kernel symbols CONFIG_CAN_PEAK_USB and
+    CONFIG_CAN_GS_USB. No proprietary transport or vendor driver is required.
+- id: semver
+  label: Semantic Versioning 2.0.0
+  conforms: true
+  evidence: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/CHANGELOG.md
+  note: >-
+    Declared by name in CHANGELOG.md, with the covered surface stated explicitly (the public C++
+    API and the CMake package). Pre-1.0, so minor bumps may break.
+- id: keep-a-changelog
+  label: Keep a Changelog
+  conforms: true
+  evidence: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/CHANGELOG.md
+  note: Declared by name; entries use Added / Changed / Fixed / Documentation groupings.
+- id: spdx-apache-2
+  label: SPDX identifiers + Apache License 2.0
+  conforms: true
+  evidence: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/LICENSE
+  note: >-
+    Source files carry SPDX-License-Identifier headers, and the repository ships NOTICE and
+    THIRD_PARTY_NOTICES.md with per-component licences and source locations, as Apache-2.0
+    redistribution requires.
+- id: mcp-2025-06-18
+  label: Model Context Protocol, revision 2025-06-18
+  conforms: true
+  evidence: https://www.aidinrobotics.co.kr/_api/mcp
+  note: >-
+    Probed 2026-09-14: initialize returned protocolVersion "2025-06-18" with a tools capability
+    (listChanged true) and logging. Implemented by Wix, not by AIDIN ROBOTICS.
+- id: llms-txt
+  label: llms.txt convention
+  conforms: true
+  evidence: https://www.aidinrobotics.co.kr/llms.txt
+  note: >-
+    HTTP 200, text/plain, 3.7 KB, correct shape — H1 title, blockquote summary, sectioned link
+    lists. Saved verbatim to llms/aidinrobotics-llms.txt.
+- id: ros2
+  label: ROS 2 package conventions (ament / colcon)
+  conforms: true
+  evidence: https://github.com/aidinrobotics/AFT_rs485/tree/dashing-devel
+  note: >-
+    The AFT_rs485 driver ships package.xml, setup.py and ament linter tests (copyright, flake8,
+    pep257) on its dashing-devel branch, and catkin CMakeLists on the ROS 1 branches. Target is
+    ROS 2 Dashing, which reached end of life in May 2021. The Hand Gen2 SDK carries a COLCON_IGNORE
+    file — it deliberately opts OUT of a colcon workspace build, with the ROS 2 wrapper kept in a
+    separate (currently unreachable) repository.
+- id: rfc-9457
+  label: RFC 9457 Problem Details
+  conforms: false
+  evidence: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/docs/en/15_error_messages.md
+  note: >-
+    Not applicable rather than missing. The error envelope is a C++ exception carrying an ErrorCode
+    enum; there is no HTTP surface that could return application/problem+json.
+- id: rfc-9116
+  label: RFC 9116 security.txt
+  conforms: false
+  evidence: https://www.aidinrobotics.co.kr/.well-known/security.txt
+  note: 'Probed 2026-09-14: HTTP 400 (Wix error shell). No security.txt is served on any host.'
+- id: oauth2
+  label: OAuth 2.0
+  conforms: false
+  evidence: https://www.aidinrobotics.co.kr/_api/mcp
+  note: >-
+    Not applicable. The one network surface is anonymous by design and mints its own visitor tokens;
+    no authorization server exists.
+product_interfaces:
+  description: >-
+    Fieldbus and interface variants the company advertises for its sensor products. Recorded as a
+    declaration from the company's own certification page, not as a contract this pipeline parsed —
+    no machine-readable device description (ESI, EDS, GSDML) was found published for any of them.
+  evidence: https://www.aidinrobotics.co.kr/en/certification
+  checked: '2026-09-14'
+  variants:
+  - EtherCAT
+  - EtherNet/IP
+  - CAN
+  - Ethernet
+  - RS-485 (AFT series, per the AFT_rs485 ROS driver)
+certifications:
+  description: >-
+    Product-level marks published on the company's certification page for the AFT-MINI and AFT200
+    series. These certify hardware — quality management, EMC, electrical safety and hazardous
+    substances — not an API, a data-handling programme or an information-security posture. No SOC 2,
+    ISO 27001, PCI, HIPAA or FedRAMP claim is made anywhere, and no trust centre exists.
+  source: https://www.aidinrobotics.co.kr/en/certification
+  checked: '2026-09-14'
+  http_status: 200
+  items:
+  - name: ISO 9001
+    scope: Quality management system
+  - name: CE
+    scope: European conformity (EMC / product safety)
+  - name: KC
+    scope: Korea Certification mark
+  - name: FCC
+    scope: US electromagnetic compatibility
+  - name: RoHS
+    scope: Restriction of hazardous substances

@@ -1,0 +1,123 @@
+generated: '2026-09-14'
+method: probed
+status: published
+source: https://www.aidinrobotics.co.kr/_api/mcp
+description: >-
+  AIDIN ROBOTICS serves a live, unauthenticated remote MCP endpoint at
+  https://www.aidinrobotics.co.kr/_api/mcp, advertised in the company's own /llms.txt under an
+  "AI 에이전트 액세스" (AI agent access) section. An anonymous JSON-RPC initialize returned
+  serverInfo.name 'Site Visitor Assistant for site "AIDIN ROBOTICS"
+  (https://www.aidinrobotics.co.kr/_api/mcp)' at protocol version 2025-06-18, and tools/list
+  returned 9 tools with full inputSchemas. This is the only network-callable API surface AIDIN
+  ROBOTICS publishes — the company is a robot-sensor manufacturer whose first-party developer
+  material is a device-side C++/ROS SDK on GitHub, not a web API.
+authorship: platform
+authorship_note: >-
+  This is the stock Wix Site MCP server, not a server AIDIN ROBOTICS wrote. The tool set
+  (GetBusinessDetails, SearchInSite, SearchSiteApiDocs, GenerateVisitorToken, CallWixSiteAPI,
+  ExecuteWixAPI, ReadFullDocsArticle, ReadFullDocsMethodSchema, BrowseWixRESTDocsMenu) is
+  byte-identical across Wix tenants and is documented at
+  https://dev.wix.com/docs/develop-websites/articles/get-started/about-the-wix-site-mcp, which
+  the company's own llms.txt links. AIDIN ROBOTICS' contribution is enabling it on its own host
+  and advertising it; the surface is real and reachable, but it is a platform affordance, not
+  provider-authored API design.
+server:
+  name: Site Visitor Assistant for site "AIDIN ROBOTICS" (https://www.aidinrobotics.co.kr/_api/mcp)
+  version: 1.0.0
+  transport: http
+  url: https://www.aidinrobotics.co.kr/_api/mcp
+  protocol_version: '2025-06-18'
+  auth: none
+  capabilities:
+    tools:
+      listChanged: true
+    logging: {}
+deployment:
+  mode: remote
+  endpoint: https://www.aidinrobotics.co.kr/_api/mcp
+  auth: none
+  verified: probed
+  checked: '2026-09-14'
+  probe:
+    initialize:
+      http_status: 200
+      server_name: Site Visitor Assistant for site "AIDIN ROBOTICS" (https://www.aidinrobotics.co.kr/_api/mcp)
+      protocol_version: '2025-06-18'
+      raw: mcp/aidinrobotics-mcp-initialize.json
+    tools_list:
+      http_status: 200
+      content_type: application/json; charset=utf-8
+      tool_count: 9
+      raw: mcp/aidinrobotics-mcp-tools.json
+tool_count: 9
+tools:
+- name: GetBusinessDetails
+  description: Get business and site details (timezone, email, phone, address) for the site.
+  parameters: []
+- name: SearchInSite
+  description: Searches the site for information.
+  parameters:
+  - searchTerm
+- name: SearchSiteApiDocs
+  description: >-
+    Searches the API documentation for the Wix business solutions installed on this site and
+    returns how to use the site via the API. Probed 2026-09-14 with searchTerm "installed business
+    solutions products stores catalog": returned the Wix eCommerce API introduction, confirming an
+    eCommerce solution is installed. The site's store-products-sitemap.xml lists five products, so
+    this tool — not SearchInSite — is the documented route to the product/commerce surface.
+  parameters:
+  - searchTerm
+- name: GenerateVisitorToken
+  description: >-
+    Creates a new visitor session and obtains a visitor access token for the site. Must be called
+    before CallWixSiteAPI or ExecuteWixAPI when no visitor token is in context.
+  parameters: []
+- name: CallWixSiteAPI
+  description: >-
+    Calls a Wix API method on the site on the visitor's behalf — query site data, book a session,
+    start a purchase.
+  parameters:
+  - visitorToken
+  - url
+  - method
+  - body
+- name: ExecuteWixAPI
+  description: >-
+    Runs JavaScript against the Wix REST API on the site on the visitor's behalf. Declares a
+    hasMutations flag, which is the only write/read signal exposed anywhere on this surface.
+  parameters:
+  - code
+  - reason
+  - hasMutations
+  - sourceDocUrls
+  - visitorToken
+- name: ReadFullDocsArticle
+  description: Fetches a complete article from the Wix developer documentation portal.
+  parameters:
+  - articleUrl
+- name: ReadFullDocsMethodSchema
+  description: Fetches the full schema for a Wix API method before it is called.
+  parameters:
+  - articleUrl
+  - reason
+- name: BrowseWixRESTDocsMenu
+  description: Browses the Wix REST API documentation menu hierarchy.
+  parameters:
+  - menuUrl
+  - reason
+notes:
+- >-
+  Several tool descriptions returned by this endpoint embed <agent-mandatory-instructions>
+  blocks addressed to the calling agent (Wix platform boilerplate telling an agent how to manage
+  a Wix site, including "YOU MUST USE IT AT THE BEGINNING OF ANY CONVERSATION"). They are recorded
+  here verbatim as fetched data in mcp/aidinrobotics-mcp-tools.json and were not executed or
+  followed.
+- >-
+  No OpenAPI, GraphQL, AsyncAPI, gRPC or WSDL contract was found on any AIDIN ROBOTICS host. The
+  MCP tool inputSchemas in mcp/aidinrobotics-mcp-tools.json are the only machine-readable
+  interface definitions the company serves over HTTP. The company's substantive interface
+  contract is device-side: the C++ headers and documented CAN-FD protocol of the AIDIN Hand Gen2
+  SDK (see packages/aidinrobotics-packages.yml).
+- >-
+  No tool crosswalk is emitted: a crosswalk binds MCP tools to backing OpenAPI operationIds, and
+  AIDIN ROBOTICS publishes no OpenAPI to bind against.

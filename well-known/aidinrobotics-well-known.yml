@@ -1,0 +1,100 @@
+generated: '2026-09-14'
+method: probed
+source: probed directly against every host this record knows
+description: >-
+  Well-known discovery probe of all three AIDIN ROBOTICS hosts. EVERY path missed. The apex
+  (aidinrobotics.co.kr) and the .com (aidinrobotics.com) 301-redirect to www; the www host is
+  Wix-served and answers HTTP 400 with an HTML error shell for every /.well-known/* path, which is
+  a miss, not a document. The help centre (help.aidinrobotics.co.kr) returns a 404 HTML page for
+  every path. No pointer of type WellKnown, APICatalog or SecurityTxt is emitted for this record,
+  because the provider serves none of these documents. The site's MCP endpoint
+  (https://www.aidinrobotics.co.kr/_api/mcp) is unauthenticated and therefore publishes no OAuth
+  protected-resource or authorization-server metadata either. Note the one discovery document
+  AIDIN ROBOTICS DOES serve is not a /.well-known/ path at all — /llms.txt returns HTTP 200 with a
+  real company-authored document (saved to llms/aidinrobotics-llms.txt) and is pointed at with
+  type LLMsTxt.
+hosts:
+- host: www.aidinrobotics.co.kr
+  note: >-
+    canonical host; also the MCP endpoint host (/_api/mcp). Wix returns HTTP 400 with an HTML
+    error page for unknown /.well-known/* paths — an error shell, not a document.
+  documents:
+  - path: /.well-known/security.txt
+    status: 400
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 400
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 400
+    file: null
+  - path: /.well-known/api-catalog
+    status: 400
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 400
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 400
+    file: null
+  - path: /.well-known/agent.json
+    status: 400
+    file: null
+- host: aidinrobotics.co.kr
+  note: apex; 301-redirects to www.aidinrobotics.co.kr for every path probed
+  documents:
+  - path: /.well-known/security.txt
+    status: 301
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 301
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 301
+    file: null
+  - path: /.well-known/api-catalog
+    status: 301
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 301
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 301
+    file: null
+  - path: /.well-known/agent.json
+    status: 301
+    file: null
+- host: help.aidinrobotics.co.kr
+  note: >-
+    customer help centre (Korean-language). Returns HTTP 404 with an HTML page for every
+    /.well-known/* path and for /llms.txt.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: aidinrobotics.com
+  note: >-
+    alternate registration; 301-redirects to https://www.aidinrobotics.co.kr/ and serves no
+    content of its own.
+  documents:
+  - path: /
+    status: 301
+    file: null

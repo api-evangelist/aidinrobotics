@@ -1,0 +1,41 @@
+generated: '2026-09-14'
+method: probed
+source: https://www.aidinrobotics.co.kr/_api/mcp
+description: >-
+  AIDIN ROBOTICS publishes no rate limits, and its one network endpoint signals none at runtime. A
+  live unauthenticated MCP response was inspected header by header on 2026-09-14: no RateLimit-*,
+  no X-RateLimit-*, no Retry-After, no quota or usage header of any kind. An agent calling this
+  surface has no way to know what it is allowed to do until it is refused. The observed headers are
+  Wix/Cloudflare infrastructure (x-wix-request-id, cf-ray, cf-cache-status, x-robots-tag: noindex),
+  which is consistent with limits being enforced at the CDN edge without being advertised.
+limit_count: 0
+limits: []
+response_headers:
+  observed: []
+  absent:
+  - RateLimit-Limit
+  - RateLimit-Remaining
+  - RateLimit-Reset
+  - X-RateLimit-Limit
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  - Retry-After
+  probe:
+    url: https://www.aidinrobotics.co.kr/_api/mcp
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 200
+    content_type: application/json; charset=utf-8
+    checked: '2026-09-14'
+  note: >-
+    Only a single probe request was issued. No limit was deliberately exhausted, so the exhaustion
+    status code is unknown rather than recorded as absent.
+exhaustion_status: unknown
+documentation: null
+device_side_note: >-
+  The SDK has no quota, but it does have a hard scheduling contract that plays the same role for an
+  integrator: the control and communication loop runs at a fixed control_rate (default 500 Hz) and
+  the communication layer treats roughly 100 ms without received frames as an error, failing
+  connect() outright if no first frame arrives within 300 ms and raising HardwareFault if the
+  drives do not reach quick stop within 500 ms. Those are real, documented timing budgets — see
+  conventions/aidinrobotics-conventions.yml and errors/aidinrobotics-error-codes.yml.

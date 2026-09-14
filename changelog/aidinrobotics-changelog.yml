@@ -1,0 +1,78 @@
+generated: '2026-09-14'
+method: searched
+source: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/CHANGELOG.md
+description: >-
+  AIDIN ROBOTICS maintains one dated, machine-locatable changelog: CHANGELOG.md in the AIDIN Hand
+  Gen2 SDK repository. It declares its own format ("based on Keep a Changelog", "adheres to
+  Semantic Versioning") and names exactly what the version number covers — the public C++ API,
+  meaning the headers under include/aidin_hand2/ and the CMake package. Entries are grouped under
+  Added / Changed / Fixed / Documentation headings, breaking changes are called out inline with a
+  **Breaking:** prefix, and several entries carry a GitHub [!IMPORTANT] callout explaining the
+  failure the change prevents. No changelog exists for the company's hardware products, for the
+  AFT_rs485 ROS driver, or for the Wix-hosted site MCP surface.
+applies_to: aidin-hand2-sdk (C++ public API + CMake package)
+scheme: semver
+format: keep-a-changelog
+format_url: https://keepachangelog.com/
+versioning_url: https://semver.org/
+current_version: 0.5.2
+current_version_date: '2026-09-10'
+entry_count: 8
+first_dated_entry: '2026-08-24'
+entries:
+- version: 0.5.2
+  date: '2026-09-10'
+  breaking: true
+  highlights:
+  - Support for the 2 mm thumb ball-screw lead alongside the 1 mm one, selected at build time with -DAIDIN_HAND2_THUMB_LEAD=2mm.
+  - 'Breaking: libaidin_hand2_kinematics.so.<SDK version> replaces libaidin_hand2_kinematics.so.1, so consumers must relink.'
+  - The prebuilt kinematics library no longer carries a version of its own; its file name now comes from the project version.
+  note: >-
+    The [!IMPORTANT] callout on this entry documents a real silent-corruption incident: under the
+    fixed soname a 0.5.0 kinematics library satisfied a 0.5.1 consumer, and two thumb actuators
+    converted at half the counts per millimetre with no diagnostic. A mismatch now fails to load
+    and names the file it wanted.
+- version: 0.5.1
+  date: '2026-09-10'
+  breaking: false
+  highlights:
+  - arm64 becomes a shipped architecture (cpp/prebuilt/aarch64).
+  - CI covers x86_64 and arm64 on Ubuntu 22.04 and 24.04, with unit tests re-run under ThreadSanitizer.
+  - 'Thumb d1/d2 screws changed from a 2 mm to a 1 mm lead; kinematics converts those actuators at twice the count per millimetre. Public API unchanged.'
+- version: 0.5.0
+  date: '2026-09-10'
+  breaking: null
+  highlights: []
+  note: Entry present and dated in CHANGELOG.md; not summarised here.
+- version: 0.4.0
+  date: '2026-08-26'
+  breaking: null
+  highlights: []
+  note: Entry present and dated in CHANGELOG.md; not summarised here.
+- version: 0.3.1
+  date: '2026-08-26'
+  breaking: null
+  highlights: []
+  note: Entry present and dated in CHANGELOG.md; not summarised here.
+- version: 0.3.0
+  date: '2026-08-24'
+  breaking: null
+  highlights: []
+  note: Entry present and dated in CHANGELOG.md; not summarised here.
+- version: 0.2.0
+  date: null
+  breaking: null
+  highlights: []
+  note: Entry present in CHANGELOG.md but carries no date.
+- version: 0.1.0
+  date: null
+  breaking: null
+  highlights: []
+  note: Entry present in CHANGELOG.md but carries no date.
+gaps:
+- >-
+  The tag stream lags the changelog: the newest git tag is v0.5.1 while CHANGELOG.md documents
+  0.5.2, and no GitHub Release object has been created for any version.
+- >-
+  No product/firmware changelog and no site or MCP changelog are published anywhere on
+  aidinrobotics.co.kr.

@@ -1,0 +1,81 @@
+generated: '2026-09-14'
+method: searched
+source: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/CHANGELOG.md
+description: >-
+  What AIDIN ROBOTICS publishes about the life of its interfaces is entirely inside the AIDIN Hand
+  Gen2 SDK repository, and it is better than the company's web presence suggests. The CHANGELOG
+  names its versioning scheme, names exactly which surface that scheme covers, marks breaking
+  changes inline, and — unusually — explains the failure each breaking change prevents. What does
+  NOT exist is everything an operator would expect from a service: no status page, no SLA, no
+  deprecation policy, no sunset schedule, no published support window, and no release cadence
+  statement. That asymmetry is honest for a company whose product is hardware: there is no uptime
+  to report because there is nothing hosted to be up.
+versioning:
+  scheme: semver
+  url: https://semver.org/
+  covers: The public C++ API — headers under include/aidin_hand2/ and the CMake package
+  current_version: 0.5.2
+  current_version_date: '2026-09-10'
+  pre_1_0: true
+  note: >-
+    The SDK is pre-1.0, and the changelog uses that freedom — 0.5.2 shipped a breaking soname
+    change four days after 0.5.0. A consumer should read every minor bump as potentially breaking
+    until 1.0.
+breaking_change_practice:
+  documented: true
+  marker: '**Breaking:** prefix inside the Changed section, plus a GitHub [!IMPORTANT] callout'
+  example: >-
+    0.5.2 — "libaidin_hand2_kinematics.so.<SDK version> replaces libaidin_hand2_kinematics.so.1.
+    Relink against this release; a consumer built against 0.5.1 looks for a file name this release
+    does not ship."
+  note: >-
+    The callout on that entry describes a real field incident rather than a policy: under the old
+    fixed soname, a 0.5.0 kinematics library satisfied a 0.5.1 consumer and two thumb actuators
+    converted at half the counts per millimetre with no diagnostic of any kind. The breaking change
+    exists to make that mismatch fail loudly.
+deprecation_policy:
+  published: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    No deprecation or sunset policy is published for the SDK, the ROS driver or any product. Two
+    de-facto deprecations are visible in the record and neither is announced: 0.5.1 told owners of
+    the 2 mm thumb hardware to stay on 0.5.0 (withdrawn in 0.5.2 in favour of a build option), and
+    the AFT_rs485 ROS driver targets ROS 2 Dashing Diademata, which reached end of life in May
+    2021, with no successor named.
+support_matrix:
+  published: true
+  source: https://github.com/aidinrobotics/aidin-hand2-sdk#system-requirements
+  entries:
+  - 'Ubuntu 22.04 and 24.04, x86_64 and arm64 — build and unit tests verified in CI on every push'
+  - 'GCC >= 11, CMake >= 3.16, spdlog >= 1.9, can-utils'
+  - 'CAN-FD capable SocketCAN device at 1 Mbit/s arbitration / 5 Mbit/s data'
+  - 'PREEMPT_RT kernel recommended for the 500 Hz real-time loop'
+  - 'ROS 2 Humble for the (unpublished) wrapper'
+  note: >-
+    CI is real and reported: GitHub Actions runs build and unit tests on four platform
+    combinations and re-runs the unit tests under ThreadSanitizer, with the badge in the README.
+    The README is explicit that this covers build and unit tests only — CAN-FD, PREEMPT_RT and the
+    500 Hz loop are kernel-side and verified on the device.
+status_page:
+  published: false
+  note: >-
+    No status page exists and none is expected. AIDIN ROBOTICS hosts no service whose availability
+    could be reported; its one network surface is a Wix platform endpoint on a marketing site.
+sla:
+  published: false
+release_channel:
+  git_tags: true
+  latest_tag: v0.5.1
+  github_releases: false
+  note: >-
+    The tag stream lags CHANGELOG.md by one version (tag v0.5.1 vs changelog 0.5.2) and no GitHub
+    Release object has been cut, so a consumer watching releases sees nothing and a consumer
+    watching tags sees a stale version. The changelog is the only accurate release record.
+end_of_life:
+  announced: []
+  observed:
+  - surface: AFT_rs485 (serial_rs485 ROS driver)
+    signal: >-
+      Last push 2021-01-21; newest branch targets ROS 2 Dashing Diademata (EOL May 2021). Not
+      marked deprecated or archived by the company.

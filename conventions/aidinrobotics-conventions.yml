@@ -1,0 +1,159 @@
+generated: '2026-09-14'
+method: searched
+source: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/docs/en/07_cpp_usage_guide.md
+source_secondary: https://www.aidinrobotics.co.kr/llms.txt
+description: >-
+  AIDIN ROBOTICS operates two entirely different interfaces and they share almost no conventions,
+  so both are recorded separately below. The SUBSTANTIVE one is device-side: the AIDIN Hand Gen2
+  SDK, a C++ library whose "request" is a lifecycle call or a control command over CAN-FD and
+  whose "response" is a state struct read at 500 Hz. The NETWORK one is the stock Wix Site MCP
+  endpoint on the marketing host, whose conventions are Wix's, not AIDIN's. There is no REST API,
+  so the usual HTTP cross-cutting concerns — pagination, sparse fields, expansion, request-id
+  tracing headers, versioned URL paths, rate-limit headers — have no surface to exist on, and are
+  recorded as not-applicable rather than as gaps.
+surfaces:
+- id: sdk
+  name: AIDIN Hand Gen2 SDK (C++)
+  kind: device-sdk
+  transport: CAN-FD over Linux SocketCAN (1 Mbit/s nominal, 5 Mbit/s data phase)
+  authored_by: provider
+- id: site-mcp
+  name: AIDIN ROBOTICS Site MCP
+  kind: mcp
+  transport: HTTP JSON-RPC (MCP 2025-06-18)
+  authored_by: platform (Wix)
+authentication:
+  sdk: >-
+    None at the protocol level. Access control is physical and OS-level — the caller needs the CAN
+    interface and the CAP_NET_RAW capability (and CAP_NET_ADMIN to bring the link up). The SDK
+    detects and refuses a second commanding master on the same bus ("another master is commanding
+    this hand on <name>"), which is the only exclusivity guarantee on the wire.
+  site_mcp: >-
+    Anonymous. initialize and tools/list need no credential. Acting on a visitor's behalf needs a
+    visitor token minted by the server's own GenerateVisitorToken tool. See
+    authentication/aidinrobotics-authentication.yml.
+versioning:
+  scheme: semver
+  covers: >-
+    The public C++ API only — the headers under include/aidin_hand2/ and the CMake package. The
+    CHANGELOG states this scope explicitly.
+  note: >-
+    The prebuilt kinematics shared object is versioned by the SDK release
+    (libaidin_hand2_kinematics.so.<SDK version>) precisely so a library from one release cannot
+    satisfy a consumer from another; 0.5.2 made that change after a silent mismatch corrupted
+    thumb-actuator conversion constants. MCP protocol version is 2025-06-18, set by Wix.
+error_envelope:
+  sdk: >-
+    aidin_hand2::Exception (derived from std::runtime_error) thrown by every public call, carrying
+    an ErrorCode enum alongside the message. what() carries the message ONLY — the code is not in
+    the string. Grammar is "Cannot <action>: <reason>". Full catalogue in
+    errors/aidinrobotics-error-codes.yml.
+  site_mcp: JSON-RPC errors from the Wix platform; no AIDIN-authored error vocabulary.
+pagination:
+  applicable: false
+  note: No collection-returning HTTP API exists on any AIDIN host.
+field_expansion:
+  applicable: false
+metadata:
+  applicable: false
+request_id_tracing:
+  sdk: >-
+    Cycle-numbered rather than id-based. Faulted causes name the control cycle they happened on
+    ("no RX since cycle <n>", "control loop terminated at cycle <n>"), and the SDK ships a
+    structured logging surface (log sinks + callbacks, docs/en/09_cpp_logging.md) that the error
+    reference repeatedly instructs callers to keep as evidence.
+  site_mcp: >-
+    Wix returns an x-wix-request-id header on every MCP response (observed 2026-09-14), which is a
+    platform affordance, not a documented AIDIN convention.
+rate_limit_signaling:
+  applicable: false
+  note: >-
+    See rate-limits/aidinrobotics-rate-limits.yml. The MCP response carried no RateLimit-*,
+    X-RateLimit-* or Retry-After header. The SDK's analogue is the fixed 500 Hz control rate, which
+    is a scheduling contract rather than a quota.
+units_and_types:
+  note: >-
+    The API reference documents a field, a unit and a contract per symbol. Documented numeric
+    contracts include control_rate default 500 (Hz), max-effort range [0, 2000], 16 actuators, 21
+    joints (16 active / 5 passive), 85 fingertip tactile taxels and 58 palm taxels, and a
+    left/right HandSide enum. NaN/Inf in a command is rejected as InvalidArgument rather than
+    clamped.
+state_machine:
+  note: >-
+    The contract is a lifecycle, not a set of endpoints. HandLifecycle moves Disconnected →
+    Connected → Running → Stopped, with Faulted reachable from anywhere; each public call is legal
+    only in named states and the error reference tabulates which call goes through in which state.
+    The underlying drives run a CiA 402 state machine, which the SDK describes in its own source as
+    "implementation vocabulary … never exposed on the public API".
+idempotency:
+  coverage: none
+  scope: []
+  mechanism: null
+  note: >-
+    No replay-protection mechanism exists on either surface. There is no idempotency key, no
+    request token and no de-duplication window. On the SDK, mutating calls are lifecycle
+    transitions and re-issuing one in the wrong state raises WrongCallOrder rather than being
+    absorbed; the docs are explicit that calling stop() a second time "does nothing and returns
+    success, because the hand is already Stopped — it is not a confirmation", which is the exact
+    shape of a repeat that LOOKS idempotent and is not. On the MCP surface, ExecuteWixAPI exposes a
+    hasMutations flag but carries no key by which a repeated mutation could be recognised.
+reversibility:
+  grade: documented
+  applicable: true
+  note: >-
+    Every state-changing call in the SDK has a documented counterpart and the docs name which one
+    to use from which state, so a caller can always find the way back. What does NOT exist — and
+    the reason this grades `documented` rather than `verified` — is an operation that undoes a
+    motion already executed: the hand does not remember a previous pose to restore, and the
+    quick-stop timings below are timeouts on reaching a safe state, not windows inside which an
+    action can be taken back.
+  reversals:
+  - write: 'connect()'
+    reversal: 'disconnect()'
+    window: null
+    note: 'From Faulted, reconnect() is the only exit; connect() is rejected.'
+  - write: 'run() (enable drives, start the 500 Hz loop)'
+    reversal: 'stop() (quick stop)'
+    window: >-
+      Drives must reach quick stop within 500 ms or HardwareFault is raised. While Stopped the loop
+      re-sends a quick stop every cycle so the drives receive it once communication returns.
+  - write: 'set_command() (position / impedance / joint / actuator modes)'
+    reversal: 'Idle command, or stop()'
+    window: null
+    note: >-
+      Commands outside the documented workspace are CLAMPED rather than rejected
+      (docs/en/14_workspace_limits.md), so the recovery from an out-of-range target is a new
+      in-range command, not an undo.
+  - write: 'home() (find the origin)'
+    reversal: null
+    window: null
+    note: >-
+      Homing is not reversible. An interruption leaves "interrupted during homing — call run() and
+      home() again" and the remedy is to repeat it, not to undo it.
+  - write: 'a Faulted stop'
+    reversal: 'reconnect()'
+    window: null
+    note: 'reconnect() is rejected outside Faulted ("not faulted — reconnect() recovers from Faulted only").'
+  - write: 'MCP ExecuteWixAPI / CallWixSiteAPI with hasMutations true'
+    reversal: null
+    window: null
+    note: >-
+      No reversal is documented for the MCP write path. An agent starting a checkout on this site
+      has no published way to void it.
+  safety_caveat: >-
+    The SDK carries an explicit [!WARNING] that when a stop ends without confirmation the drives
+    may hold the last command, and an operational rule not to re-enable repeatedly before the cause
+    of an actuator fault is removed. Both are the kind of statement an agent acting on this
+    hardware must read before acting, not after.
+dry_run_mode:
+  available: false
+  note: >-
+    No simulation or dry-run mode is offered by the SDK itself. The company does maintain a fork of
+    mujoco_ros2_control (a MuJoCo ros2_control hardware interface), which is an upstream project,
+    not an AIDIN-published rehearsal surface for this SDK.
+cross_links:
+- errors/aidinrobotics-error-codes.yml
+- lifecycle/aidinrobotics-lifecycle.yml
+- authentication/aidinrobotics-authentication.yml
+- rate-limits/aidinrobotics-rate-limits.yml
+- conformance/aidinrobotics-conformance.yml

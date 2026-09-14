@@ -1,0 +1,167 @@
+generated: '2026-09-14'
+method: searched
+source: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/docs/en/15_error_messages.md
+source_secondary: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/cpp/include/aidin_hand2/types/error.hpp
+description: >-
+  AIDIN ROBOTICS publishes a genuine, remediation-bearing error reference — not for a web API, but
+  for the AIDIN Hand Gen2 SDK. docs/en/15_error_messages.md is a 19 KB document (with a full
+  Korean twin at docs/ko/15_error_messages.md) that is keyed on the message text a caller will
+  actually see, and every row carries a Cause and a Remedy column. The envelope is a C++
+  exception, not an HTTP body: every public call throws aidin_hand2::Exception, which derives from
+  std::runtime_error and carries an ErrorCode alongside the message. The docs warn explicitly that
+  what() carries the message ONLY and the code is not attached to it, so a caller must record
+  both. Format is therefore native, not RFC 9457 — there is no problem+json surface anywhere in
+  this record.
+format: native-cpp-exception
+envelope:
+  type: aidin_hand2::Exception
+  base: std::runtime_error
+  fields:
+  - name: what()
+    description: >-
+      The human message. Most take the form "Cannot <action>: <reason>"; <...> marks a
+      runtime value.
+  - name: code()
+    description: >-
+      The ErrorCode enum value. NOT embedded in what() — record it separately.
+  message_grammar: 'Cannot <action>: <reason>'
+  faulted_grammar: 'Cannot <action>: hand faulted (<cause>)<hint>'
+code_count: 7
+codes:
+- code: InvalidArgument
+  class: fix-the-call
+  meaning: A value broke a rule
+  look_at: The calling code
+  examples:
+  - 'HandConfig: interface_name must not be empty'
+  - 'HandConfig: hand_side must be HandSide::Left or HandSide::Right'
+  - 'Cannot create hand: control_rate must be positive'
+  - 'Cannot set max effort: limit contains NaN/Inf'
+  documented_constraints:
+  - control_rate must be positive; the default is 500 (Hz)
+  - max effort accepted range is [0, 2000]
+- code: WrongCallOrder
+  class: fix-the-call
+  meaning: Not callable in the current lifecycle state
+  look_at: The calling code (lifecycle)
+  entry_count: 12
+  examples:
+  - 'already connected — call disconnect() first to rebuild the link'
+  - 'not connected — call connect() first'
+  - 'not running — call run() first'
+  - 'not homed — call home() first'
+  - 'not faulted — reconnect() recovers from Faulted only'
+  - 'hand is destroyed — create a hand'
+  - 'CAN transport already open: <name> — close it before reopening'
+  note: >-
+    The Situation column names the HandLifecycle value each rejection happens in, and the remedy
+    is always the specific call to make first. The current lifecycle is readable from
+    get_diagnostics().lifecycle.
+- code: InterfaceUnavailable
+  class: check-the-environment
+  meaning: The CAN interface could not be opened
+  look_at: Interface name, permissions, ownership
+  entry_count: 12
+  examples:
+  - "CAN interface '<name>' not found (check the name with `ip link`)"
+  - "permission denied opening CAN socket on '<name>' (need root or CAP_NET_RAW)"
+  - 'CAN not supported by the kernel (try `modprobe can can_raw`)'
+  - "kernel or interface '<name>' is not configured for CAN-FD (CAN_RAW_FD_FRAMES)"
+  - 'another master is commanding this hand on <name>'
+  note: >-
+    Several messages embed the exact shell command that fixes them, including the full `ip link
+    set <name> type can bitrate 1000000 sample-point 0.875 sjw 10 …` bring-up line when the
+    interface is DOWN and the SDK lacks CAP_NET_ADMIN.
+- code: CommunicationLost
+  class: check-the-environment
+  meaning: Communication is gone
+  look_at: Power, wiring, bus state
+  entry_count: 7
+  documented_windows:
+  - 'connect() fails if no first frame arrives within 300 ms'
+  - 'roughly 100 ms without RX is treated as a communication error by the control loop'
+  - 'a transient full TX queue (EAGAIN, EWOULDBLOCK, ENOBUFS) is NOT treated as a communication error'
+  safety_note: >-
+    The docs carry an explicit [!WARNING]: when a stop ends without confirmation, the drives may
+    hold the last command. While Stopped the loop keeps re-sending a quick stop every cycle so the
+    drives receive it once communication returns, and calling stop() again returns success
+    WITHOUT being a confirmation.
+- code: HardwareFault
+  class: check-the-device
+  meaning: The device could not finish the request
+  look_at: Drive faults, mechanics
+  entry_count: 7
+  documented_windows:
+  - 'drives must reach quick stop within 500 ms or stop()/disconnect() raises'
+  examples:
+  - 'Cannot home hand: no actuator could be brought under control (actuators <list>)'
+  - 'Cannot home hand: some actuators reported a homing error (actuators <list>)'
+  - 'Cannot stop hand: drives did not reach quick stop within 500 ms — retry stop() or power off the hand'
+- code: ControlLoopFault
+  class: report-to-vendor
+  meaning: The control and communication loop terminated abnormally
+  look_at: Report to the SDK (issue tracker named in docs/en/06_sdk_build_and_install.md)
+- code: UnexpectedError
+  class: report-to-vendor
+  meaning: An unclassified failure
+  look_at: Report to the SDK
+faulted_causes:
+  description: >-
+    Once the hand is Faulted, every lifecycle-changing call is rejected with the cause of the stop
+    rather than a WrongCallOrder reason, and the ErrorCode follows the cause. Configuration and
+    observation calls still go through. reconnect() is the only exit.
+  causes:
+  - cause: 'no RX since cycle <n>'
+    code: CommunicationLost
+  - cause: 'CAN TX failed at cycle <n> (errno <number>: <text>)'
+    code: CommunicationLost
+  - cause: 'control loop terminated at cycle <n>'
+    code: ControlLoopFault
+  rx_error_suffixes:
+  - 'bus off'
+  - 'bus error (no ACK)'
+  - 'bus error'
+  - 'malformed data'
+  - 'conflicting command'
+  - 'unknown data'
+actuator_faults:
+  description: >-
+    A second, independent axis. get_diagnostics().actuator_health.fault is an array of
+    ActuatorFault values that persist even when nothing is thrown, so the docs instruct a caller to
+    record them alongside the ErrorCode. Unknown appears in the RT log as "UnknownError 0x<code>"
+    and the raw code should be reported with it. The reference closes with an operational rule:
+    do not re-enable repeatedly before the cause is removed.
+  value_count: 20
+  values:
+  - OverVoltageError
+  - UnderVoltageError
+  - OverCurrentError
+  - OverLoadError
+  - OverTemperatureError
+  - CurrentDetectionError
+  - FollowingError
+  - SpeedError
+  - CommunicationError
+  - HallSensorError
+  - PositiveLimitSwitchError
+  - NegativeLimitSwitchError
+  - EmergencySwitchError
+  - Sto1Error
+  - Sto2Error
+  - SerialEncoderChannelAError
+  - SerialEncoderChannelBError
+  - SerialEncoderChannelADisconnectedError
+  - SerialEncoderChannelBDisconnectedError
+  - Unknown
+  safety_note: >-
+    Sto1Error and Sto2Error are Safe Torque Off channel faults and EmergencySwitchError is the
+    e-stop circuit — these are functional-safety signals surfaced through the ordinary diagnostics
+    array, which is why the docs treat the fault array as a separate axis that must be logged even
+    on a successful call.
+gaps:
+- >-
+  The MCP surface at https://www.aidinrobotics.co.kr/_api/mcp publishes no error catalogue of its
+  own; it is the stock Wix Site MCP server and returns Wix platform errors.
+- >-
+  No error reference is published for the AFT_rs485 ROS driver or for any hardware product
+  outside the AIDIN Hand Gen2.

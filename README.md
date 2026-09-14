@@ -1,4 +1,4 @@
-# Aidinrobotics
+# AIDIN ROBOTICS
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,5 +64,22 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Aidinrobotics is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://equityzen.com/company/aidinrobotics
+AIDIN ROBOTICS Inc. (에이딘로보틱스) is a South Korean robot-sensor company founded in 2019 out of the
+Robotics Innovatory lab at Sungkyunkwan University and headquartered in Anyang, Gyeonggi-do. It
+builds six-axis force/torque sensors, ultra-thin joint torque sensors, proximity and tactile safety
+sensors, the Susgrip smart gripper, the AIDIN Hand Gen2 robot hand, the ARC motion controller and
+the AIDIN9 quadruped platform.
+
+AIDIN ROBOTICS runs no web API product and publishes no OpenAPI, GraphQL, AsyncAPI, gRPC or SOAP
+contract. Its developer surface is device-side and first-party — the Apache-2.0 AIDIN Hand Gen2 SDK
+on GitHub, a C++ library speaking CAN-FD over Linux SocketCAN with a CiA 402 drive state machine, a
+documented error catalog, a Keep a Changelog history and semantic versioning. Its only
+network-callable API surface is an anonymous Wix Site MCP endpoint on its own marketing host,
+advertised in a company-authored `llms.txt`.
+
+- Website — https://www.aidinrobotics.co.kr/en
+- GitHub org — https://github.com/aidinrobotics
+- AIDIN Hand Gen2 SDK — https://github.com/aidinrobotics/aidin-hand2-sdk
+- Site MCP endpoint — https://www.aidinrobotics.co.kr/_api/mcp
+- llms.txt — https://www.aidinrobotics.co.kr/llms.txt
+- Help centre (기술자료) — https://help.aidinrobotics.co.kr/

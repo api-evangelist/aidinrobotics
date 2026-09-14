@@ -1,0 +1,47 @@
+generated: '2026-09-14'
+method: searched
+source: https://www.aidinrobotics.co.kr/en/downloads
+description: >-
+  AIDIN ROBOTICS publishes no API plans, because it sells no API. It sells hardware, and it does
+  publish list prices for some of it: a Wix Stores catalogue with five products is live
+  (store-products-sitemap.xml, last modified 2026-04-09), and an individual product page carries a
+  real figure — Susgrip-FT lists at $10,000.00 USD, read from the product page's own structured
+  price data on 2026-09-14. There is no plans page, no tier table, no quota, no overage and no
+  metered anything. The software that does exist — the AIDIN Hand Gen2 SDK and the AFT_rs485 ROS
+  driver — is free and Apache-2.0 on GitHub with no licence key, no seat count and no commercial
+  edition. The MCP endpoint on the marketing site is free and anonymous.
+plan_count: 0
+plans: []
+pricing_model: hardware-list-price-plus-quote
+api_pricing_published: false
+software_licensing:
+  model: open-source
+  license: Apache-2.0
+  cost: free
+  note: >-
+    No paid tier, support subscription, licence key or commercial SDK edition is advertised
+    anywhere. The prebuilt kinematics library ships inside the same Apache-2.0 repository.
+hardware_pricing:
+  published: partial
+  storefront: https://www.aidinrobotics.co.kr/product-page/susgrip-ft
+  product_count_listed: 5
+  observed:
+  - product: Susgrip-FT
+    price: '10000.00'
+    currency: USD
+    source: https://www.aidinrobotics.co.kr/product-page/susgrip-ft
+    http_status: 200
+    checked: '2026-09-14'
+  note: >-
+    The shop index itself is not reachable: https://www.aidinrobotics.co.kr/shop and
+    /en/shop both return HTTP 200 while serving the homepage body — a soft-404. Individual
+    product pages under /product-page/ are live and carry prices. The remaining four products in
+    the sitemap were not priced here because two of them are duplicated exhibition/promotion
+    listings whose prices would misrepresent the catalogue.
+sales_gate:
+  present: true
+  url: https://www.aidinrobotics.co.kr/en/contact
+  note: >-
+    Sensors, robot hands, controllers and the quadruped platform are sold through a contact form
+    and sales@aidinrobotics.co.kr rather than the storefront. No price is published for the AIDIN
+    Hand Gen2 the SDK controls.

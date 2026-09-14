@@ -1,0 +1,56 @@
+generated: '2026-09-14'
+method: probed
+source: https://www.aidinrobotics.co.kr/_api/mcp
+source_secondary: https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/docs/en/15_error_messages.md
+description: >-
+  AIDIN ROBOTICS issues no API credential of any kind. There is no developer account, no key, no
+  OAuth client and no token endpoint anywhere on its hosts. Each of its two interfaces has an
+  access model, and neither is authentication in the usual sense: the network surface is anonymous
+  by design, and the device surface is protected by physical access and Linux capabilities.
+schemes:
+- id: site-mcp-anonymous
+  surface: AIDIN ROBOTICS Site MCP (https://www.aidinrobotics.co.kr/_api/mcp)
+  type: none
+  probed: '2026-09-14'
+  evidence: >-
+    An unauthenticated POST of initialize returned HTTP 200 with serverInfo, and an
+    unauthenticated tools/list returned HTTP 200 with nine tools and full inputSchemas. No
+    WWW-Authenticate challenge, no 401, no bearer token required. The company's own llms.txt states
+    it plainly: "MCP 엔드포인트에 연결하는 데 인증이 필요하지 않습니다" — no authentication is required to
+    connect to the MCP endpoint — and "사이트에서 접근 가능한 공개 정보만 이용 가능합니다", only publicly
+    accessible site information is available.
+  session_model: >-
+    The server sets an mcp-session-id response header and an XSRF-TOKEN cookie scoped to
+    www.aidinrobotics.co.kr. Two of the nine tools (CallWixSiteAPI, ExecuteWixAPI) require a
+    visitorToken argument, minted by the server's own GenerateVisitorToken tool, which itself takes
+    no parameters and needs no credential. So the write path is gated by a token an anonymous
+    caller can mint for itself on demand — a session identifier, not an authorization decision.
+  well_known_metadata: >-
+    None. /.well-known/oauth-protected-resource and /.well-known/oauth-authorization-server both
+    return HTTP 400 (Wix error shell) on this host — consistent with an endpoint that requires no
+    OAuth. See well-known/aidinrobotics-well-known.yml.
+  authored_by: platform (Wix)
+- id: sdk-os-capability
+  surface: AIDIN Hand Gen2 SDK
+  type: os-capability
+  probed: null
+  evidence: >-
+    Documented in docs/en/15_error_messages.md and docs/en/05_can_fd_setup.md rather than probed.
+    The SDK's access control is the operating system's: opening the CAN socket needs root or
+    CAP_NET_RAW ("permission denied opening CAN socket on '<name>' (need root or CAP_NET_RAW)"),
+    and bringing a DOWN interface up needs CAP_NET_ADMIN, which the SDK will not do on the caller's
+    behalf — it prints the exact `ip link set` command instead.
+  exclusivity: >-
+    The nearest thing to an authorization check on the wire is a conflict detector: the SDK raises
+    "another master is commanding this hand on <name>" and instructs the operator to leave exactly
+    one process running. Possession of the bus is the credential.
+  authored_by: provider
+oauth: false
+api_keys: false
+mtls: false
+openid_connect: false
+signup_url: null
+credential_note: >-
+  No sign-up, login, developer console or key-issuance page exists on any AIDIN ROBOTICS host. The
+  commercial motion is a sales contact form (https://www.aidinrobotics.co.kr/en/contact) and an
+  online store; software is obtained by cloning a public GitHub repository under Apache-2.0.

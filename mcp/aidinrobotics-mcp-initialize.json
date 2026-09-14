@@ -1,0 +1,17 @@
+{
+    "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+            "tools": {
+                "listChanged": true
+            },
+            "logging": {}
+        },
+        "serverInfo": {
+            "name": "Site Visitor Assistant for site \"AIDIN ROBOTICS\" (https://www.aidinrobotics.co.kr/_api/mcp)",
+            "version": "1.0.0"
+        }
+    },
+    "jsonrpc": "2.0",
+    "id": 1
+}
