@@ -1,0 +1,21 @@
+{
+  "repo": "aidinrobotics",
+  "feeds": [
+    {
+      "source": "https://www.aidinrobotics.co.kr/en/faq",
+      "feed_url": "https://www.aidinrobotics.co.kr/en/faq",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    },
+    {
+      "source": "https://www.aidinrobotics.co.kr/en/knowledgeblog",
+      "feed_url": "https://www.aidinrobotics.co.kr/en/knowledgeblog",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-09-19T20:17:39Z"
+}
