@@ -17,6 +17,21 @@ description: >-
   the company's Wix-hosted marketing site serves a company-authored llms.txt and an anonymous
   remote Model Context Protocol endpoint, which is the only network-callable API surface it
   publishes.
+deliveryModel:
+  model: saas
+  license_evidence:
+    not_product:
+    - aidinrobotics/aidin-hand2-sdk
+  open_source: unknown
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: low
+  source:
+  - pricing
+  - repository-not-product
+  generated: '2026-09-25'
+  method: derived
 image: https://static.wixstatic.com/media/d71e42_e1d5db6bf45d40c484b0c0ff01481556%7Emv2.png/v1/fit/w_2500,h_1330,al_c/d71e42_e1d5db6bf45d40c484b0c0ff01481556%7Emv2.png
 url: https://raw.githubusercontent.com/api-evangelist/aidinrobotics/refs/heads/main/apis.yml
 x-type:
@@ -82,6 +97,9 @@ apis:
     url: authentication/aidinrobotics-authentication.yml
   - type: RateLimits
     url: rate-limits/aidinrobotics-rate-limits.yml
+  x-surface: platform-generated
+  x-platform: wix
+  x-platform-surface: site-mcp
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
