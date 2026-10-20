@@ -2,25 +2,20 @@ generated: '2026-09-14'
 method: probed
 status: published
 source: https://www.aidinrobotics.co.kr/_api/mcp
-description: >-
-  AIDIN ROBOTICS serves a live, unauthenticated remote MCP endpoint at
-  https://www.aidinrobotics.co.kr/_api/mcp, advertised in the company's own /llms.txt under an
-  "AI 에이전트 액세스" (AI agent access) section. An anonymous JSON-RPC initialize returned
-  serverInfo.name 'Site Visitor Assistant for site "AIDIN ROBOTICS"
-  (https://www.aidinrobotics.co.kr/_api/mcp)' at protocol version 2025-06-18, and tools/list
-  returned 9 tools with full inputSchemas. This is the only network-callable API surface AIDIN
-  ROBOTICS publishes — the company is a robot-sensor manufacturer whose first-party developer
-  material is a device-side C++/ROS SDK on GitHub, not a web API.
+description: AIDIN ROBOTICS serves a live, unauthenticated remote MCP endpoint at https://www.aidinrobotics.co.kr/_api/mcp,
+  advertised in the company's own /llms.txt under an "AI 에이전트 액세스" (AI agent access) section. An anonymous
+  JSON-RPC initialize returned serverInfo.name 'Site Visitor Assistant for site "AIDIN ROBOTICS" (https://www.aidinrobotics.co.kr/_api/mcp)'
+  at protocol version 2025-06-18, and tools/list returned 9 tools with full inputSchemas. This is the
+  only network-callable API surface AIDIN ROBOTICS publishes — the company is a robot-sensor manufacturer
+  whose first-party developer material is a device-side C++/ROS SDK on GitHub, not a web API.
 authorship: platform
-authorship_note: >-
-  This is the stock Wix Site MCP server, not a server AIDIN ROBOTICS wrote. The tool set
-  (GetBusinessDetails, SearchInSite, SearchSiteApiDocs, GenerateVisitorToken, CallWixSiteAPI,
-  ExecuteWixAPI, ReadFullDocsArticle, ReadFullDocsMethodSchema, BrowseWixRESTDocsMenu) is
-  byte-identical across Wix tenants and is documented at
-  https://dev.wix.com/docs/develop-websites/articles/get-started/about-the-wix-site-mcp, which
-  the company's own llms.txt links. AIDIN ROBOTICS' contribution is enabling it on its own host
-  and advertising it; the surface is real and reachable, but it is a platform affordance, not
-  provider-authored API design.
+authorship_note: This is the stock Wix Site MCP server, not a server AIDIN ROBOTICS wrote. The tool set
+  (GetBusinessDetails, SearchInSite, SearchSiteApiDocs, GenerateVisitorToken, CallWixSiteAPI, ExecuteWixAPI,
+  ReadFullDocsArticle, ReadFullDocsMethodSchema, BrowseWixRESTDocsMenu) is byte-identical across Wix tenants
+  and is documented at https://dev.wix.com/docs/develop-websites/articles/get-started/about-the-wix-site-mcp,
+  which the company's own llms.txt links. AIDIN ROBOTICS' contribution is enabling it on its own host
+  and advertising it; the surface is real and reachable, but it is a platform affordance, not provider-authored
+  API design.
 server:
   name: Site Visitor Assistant for site "AIDIN ROBOTICS" (https://www.aidinrobotics.co.kr/_api/mcp)
   version: 1.0.0
@@ -59,22 +54,19 @@ tools:
   parameters:
   - searchTerm
 - name: SearchSiteApiDocs
-  description: >-
-    Searches the API documentation for the Wix business solutions installed on this site and
-    returns how to use the site via the API. Probed 2026-09-14 with searchTerm "installed business
-    solutions products stores catalog": returned the Wix eCommerce API introduction, confirming an
-    eCommerce solution is installed. The site's store-products-sitemap.xml lists five products, so
-    this tool — not SearchInSite — is the documented route to the product/commerce surface.
+  description: 'Searches the API documentation for the Wix business solutions installed on this site and
+    returns how to use the site via the API. Probed 2026-09-14 with searchTerm "installed business solutions
+    products stores catalog": returned the Wix eCommerce API introduction, confirming an eCommerce solution
+    is installed. The site''s store-products-sitemap.xml lists five products, so this tool — not SearchInSite
+    — is the documented route to the product/commerce surface.'
   parameters:
   - searchTerm
 - name: GenerateVisitorToken
-  description: >-
-    Creates a new visitor session and obtains a visitor access token for the site. Must be called
-    before CallWixSiteAPI or ExecuteWixAPI when no visitor token is in context.
+  description: Creates a new visitor session and obtains a visitor access token for the site. Must be
+    called before CallWixSiteAPI or ExecuteWixAPI when no visitor token is in context.
   parameters: []
 - name: CallWixSiteAPI
-  description: >-
-    Calls a Wix API method on the site on the visitor's behalf — query site data, book a session,
+  description: Calls a Wix API method on the site on the visitor's behalf — query site data, book a session,
     start a purchase.
   parameters:
   - visitorToken
@@ -82,9 +74,8 @@ tools:
   - method
   - body
 - name: ExecuteWixAPI
-  description: >-
-    Runs JavaScript against the Wix REST API on the site on the visitor's behalf. Declares a
-    hasMutations flag, which is the only write/read signal exposed anywhere on this surface.
+  description: Runs JavaScript against the Wix REST API on the site on the visitor's behalf. Declares
+    a hasMutations flag, which is the only write/read signal exposed anywhere on this surface.
   parameters:
   - code
   - reason
@@ -106,18 +97,49 @@ tools:
   - menuUrl
   - reason
 notes:
-- >-
-  Several tool descriptions returned by this endpoint embed <agent-mandatory-instructions>
-  blocks addressed to the calling agent (Wix platform boilerplate telling an agent how to manage
-  a Wix site, including "YOU MUST USE IT AT THE BEGINNING OF ANY CONVERSATION"). They are recorded
-  here verbatim as fetched data in mcp/aidinrobotics-mcp-tools.json and were not executed or
-  followed.
-- >-
-  No OpenAPI, GraphQL, AsyncAPI, gRPC or WSDL contract was found on any AIDIN ROBOTICS host. The
-  MCP tool inputSchemas in mcp/aidinrobotics-mcp-tools.json are the only machine-readable
-  interface definitions the company serves over HTTP. The company's substantive interface
-  contract is device-side: the C++ headers and documented CAN-FD protocol of the AIDIN Hand Gen2
-  SDK (see packages/aidinrobotics-packages.yml).
-- >-
-  No tool crosswalk is emitted: a crosswalk binds MCP tools to backing OpenAPI operationIds, and
-  AIDIN ROBOTICS publishes no OpenAPI to bind against.
+- Several tool descriptions returned by this endpoint embed <agent-mandatory-instructions> blocks addressed
+  to the calling agent (Wix platform boilerplate telling an agent how to manage a Wix site, including
+  "YOU MUST USE IT AT THE BEGINNING OF ANY CONVERSATION"). They are recorded here verbatim as fetched
+  data in mcp/aidinrobotics-mcp-tools.json and were not executed or followed.
+- 'No OpenAPI, GraphQL, AsyncAPI, gRPC or WSDL contract was found on any AIDIN ROBOTICS host. The MCP
+  tool inputSchemas in mcp/aidinrobotics-mcp-tools.json are the only machine-readable interface definitions
+  the company serves over HTTP. The company''s substantive interface contract is device-side: the C++
+  headers and documented CAN-FD protocol of the AIDIN Hand Gen2 SDK (see packages/aidinrobotics-packages.yml).'
+- 'No tool crosswalk is emitted: a crosswalk binds MCP tools to backing OpenAPI operationIds, and AIDIN
+  ROBOTICS publishes no OpenAPI to bind against.'
+tool_quality:
+  tool_count: 10
+  tokens_total: 10642
+  tokens_per_tool_median: 988
+  heavy_tools:
+  - name: ExecuteWixAPI
+    tokens: 2349
+  - name: BrowseWixRESTDocsMenu
+    tokens: 1897
+  - name: ReadFullDocsMethodSchema
+    tokens: 1735
+  - name: ReadFullDocsArticle
+    tokens: 1630
+  - name: WixREADME
+    tokens: 1526
+  heavy_tool_count: 5
+  params_total: 16
+  params_undescribed: 0
+  params_described_pct: 100.0
+  tools_with_undescribed_params: 0
+  tools_annotated: 5
+  annotated_pct: 50.0
+  state_changing_unhinted:
+  - GenerateVisitorToken
+  tools_missing_schema: 0
+  short_descriptions: 0
+  duplicate_descriptions: 0
+  duplicate_names: 0
+  nonportable_names: []
+  output_schema_count: 0
+  token_estimate: chars/3.6 of each compact tool definition
+  source: mcp/aidinrobotics-mcp-tools.json
+  measured: '2026-10-20'
+  scored: false
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
+    from Glimind's agent-readiness audit.
