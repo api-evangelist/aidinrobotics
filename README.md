@@ -64,22 +64,112 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-AIDIN ROBOTICS Inc. (에이딘로보틱스) is a South Korean robot-sensor company founded in 2019 out of the
-Robotics Innovatory lab at Sungkyunkwan University and headquartered in Anyang, Gyeonggi-do. It
-builds six-axis force/torque sensors, ultra-thin joint torque sensors, proximity and tactile safety
-sensors, the Susgrip smart gripper, the AIDIN Hand Gen2 robot hand, the ARC motion controller and
-the AIDIN9 quadruped platform.
+AIDIN ROBOTICS Inc. (에이딘로보틱스) is a South Korean robot-sensor company founded in 2019 out of the Robotics Innovatory lab in the Department of Mechanical Engineering at Sungkyunkwan University, and headquartered in Anyang, Gyeonggi-do. It builds the force-sensing layer that sits between a robot and the physical world: six-axis force/torque sensors (AFT200 series), miniature and three-axis F/T sensors, ultra-thin joint torque sensors (ATS/ATSB series), proximity and tactile safety sensors, the Susgrip smart gripper, the AIDIN Hand Gen2 robot hand, the ARC robot motion controller, and the AIDIN9 quadruped platform. Sensors ship in EtherCAT, EtherNet/IP, CAN and RS-485 variants and carry ISO 9001, CE, KC, FCC and RoHS marks. AIDIN ROBOTICS runs no web API product and publishes no OpenAPI, GraphQL, AsyncAPI, gRPC or SOAP contract. Its real developer surface is device-side and first-party: the Apache-2.0 AIDIN Hand Gen2 SDK on GitHub — a C++ library speaking CAN-FD over Linux SocketCAN with a CiA 402 drive state machine, a documented error catalog, a Keep a Changelog history and semantic versioning — plus an older ROS package for reading the AFT force/torque sensor over RS-485. Alongside that, the company's Wix-hosted marketing site serves a company-authored llms.txt and an anonymous remote Model Context Protocol endpoint, which is the only network-callable API surface it publishes.
 
-AIDIN ROBOTICS runs no web API product and publishes no OpenAPI, GraphQL, AsyncAPI, gRPC or SOAP
-contract. Its developer surface is device-side and first-party — the Apache-2.0 AIDIN Hand Gen2 SDK
-on GitHub, a C++ library speaking CAN-FD over Linux SocketCAN with a CiA 402 drive state machine, a
-documented error catalog, a Keep a Changelog history and semantic versioning. Its only
-network-callable API surface is an anonymous Wix Site MCP endpoint on its own marketing host,
-advertised in a company-authored `llms.txt`.
+**Areas:** Robotics · Sensors · Hardware · Industrial Automation · Manufacturing · Force and Torque Sensing · Cobots · Humanoid Robotics · ROS · SDK · Company
 
-- Website — https://www.aidinrobotics.co.kr/en
-- GitHub org — https://github.com/aidinrobotics
-- AIDIN Hand Gen2 SDK — https://github.com/aidinrobotics/aidin-hand2-sdk
-- Site MCP endpoint — https://www.aidinrobotics.co.kr/_api/mcp
-- llms.txt — https://www.aidinrobotics.co.kr/llms.txt
-- Help centre (기술자료) — https://help.aidinrobotics.co.kr/
+## AIDIN ROBOTICS on APIs.io
+
+Everything profiled for AIDIN ROBOTICS is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/aidinrobotics/](https://apis.io/providers/aidinrobotics/)** — or go straight to one of the APIs or properties below.
+
+### APIs (1)
+
+- [AIDIN ROBOTICS Site MCP](https://apis.io/apis/aidinrobotics/site-mcp/) — An anonymous remote Model Context Protocol endpoint served on AIDIN ROBOTICS' own host and advertised in the company's own /llms.txt under an "AI 에이전트 액세스"…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Site Visitor Assistant for site "AIDIN ROBOTICS" (https://www.aidinrobotics.co.kr/_api/mcp)](https://apis.io/servers/aidinrobotics/site-visitor-assistant-for-site-aidin-robotics-https-www-aidinrobotics-co-kr-api-mcp/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Aidinrobotics Authentication](https://apis.io/security/aidinrobotics/aidinrobotics-authentication/)
+- [Aidinrobotics Domain Security](https://apis.io/security/aidinrobotics/aidinrobotics-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Aidinrobotics Plans Pricing](https://apis.io/plans/aidinrobotics/aidinrobotics-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Aidinrobotics Rate Limits](https://apis.io/rate-limits/aidinrobotics/aidinrobotics-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.aidinrobotics.co.kr/en)
+- [Documentation](https://github.com/aidinrobotics/aidin-hand2-sdk#documentation)
+- [Getting started](https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/docs/en/06_sdk_build_and_install.md)
+- [API reference](https://github.com/aidinrobotics/aidin-hand2-sdk/blob/main/docs/en/08_cpp_api_reference.md)
+- [Support](https://help.aidinrobotics.co.kr/)
+- [Blog](https://www.aidinrobotics.co.kr/en/knowledgeblog)
+- [Compliance](https://www.aidinrobotics.co.kr/en/certification)
+- [Privacy policy](https://www.aidinrobotics.co.kr/en/privacypolicy)
+- [GitHub](https://github.com/aidinrobotics)
+
+## API Evangelist rating
+
+**Kin Score 28.4** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.8 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 18.4 |
+| Developer ergonomics | 54.8 |
+| Access clarity | 18.4 |
+
+**Agent readiness 10.1** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 25.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/aidinrobotics/](https://apis.io/providers/aidinrobotics/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for AIDIN ROBOTICS: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/aidinrobotics/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
